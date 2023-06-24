@@ -11,8 +11,8 @@ const DEFAULT_PROFILE = {
         },
     ]
 }
-
-renderProfile(DEFAULT_PROFILE)
+render()
+//renderProfile(DEFAULT_PROFILE)
 
 function render(){
     // Get json from url
@@ -67,7 +67,7 @@ function encodeBase64UrlSafe(str) {
 }
 
 function decodeBase64UrlSafe(data) {
-    return decodeURIComponent(atob(data).replace(/-/g, '+').replace(/_/g, '/'));
+    return decodeURIComponent(atob(data.replace(/-/g, '+').replace(/_/g, '/')));
 }
 
 function getUrlHash() {
