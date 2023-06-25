@@ -2,6 +2,21 @@
 var brandInfo = {};
 
 (function () {
+    let app = Vue.createApp({
+        data() {
+            return {
+                name: "",
+                bio: "",
+                links: [{"name": "Default LittleLink", "class": "button-default", "icon": "images/icons/littlelink.svg", "desc": "LittleLink"}],
+            }
+        },
+        methods: {
+            editBrand(index){
+                console.log(index)
+            }
+        }
+    })
+    app.mount("#app")
     // Load brand data from json
     fetch("brand.json")
     .then(response => response.json())

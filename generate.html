@@ -34,6 +34,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/littlelink.png">
 
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="js/utils.js"></script>
 
   <style>
@@ -57,7 +58,7 @@
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container">
+  <div class="container" id="app">
     <div class="row">
       <div class="column" style="margin-top: 10%">
 
@@ -67,20 +68,20 @@
         <!-- Title -->
         <p role="heading">Create your profile</p>
         <h1>
-          <input type="text" id="name" placeholder="Your Name">
+          <input type="text" id="name" placeholder="Your Name" v-model="name">
         </h1>
 
         <!-- Short Bio -->
         <p>Your Bio</p>
         <p>
-          <textarea name="" id="bio" cols="50" rows="10"></textarea>
+          <textarea name="" id="bio" cols="50" rows="10" v-model="bio"></textarea>
         </p>
 
         <!-- Links Container -->
         <div id="links">
 
           <!-- Default LittleLink -->
-          <a class="button button-default" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" src="images/icons/littlelink.svg" alt="">Link Your Account</a><br>
+          <a v-for="(link, index) in links" :class="'button ' + link.class" @click="editBrand(index)" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" :src="link.icon" alt="">{{link.desc}}</a><br>
 
         </div>
         <div>
