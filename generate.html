@@ -36,6 +36,21 @@
 
   <script src="js/utils.js"></script>
 
+  <style>
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+  </style>
+
 </head>
 
 <body>
@@ -50,38 +65,62 @@
         <img src="images/littlelink.svg" class="avatar" srcset="images/littlelink.svg 2x" alt="">
 
         <!-- Title -->
-        <h1 role="heading" id="name"></h1>
+        <p role="heading">Create your profile</p>
+        <h1>
+          <input type="text" id="name" placeholder="Your Name">
+        </h1>
 
         <!-- Short Bio -->
-        <p id="bio"></p>
+        <p>Your Bio</p>
+        <p>
+          <textarea name="" id="bio" cols="50" rows="10"></textarea>
+        </p>
 
         <!-- Links Container -->
         <div id="links">
 
           <!-- Default LittleLink -->
-          <a class="button button-default" href="#" target="_blank" rel="noopener" role="button"><img class="icon" src="images/icons/littlelink.svg" alt="">LittleLink</a><br>
+          <a class="button button-default" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" src="images/icons/littlelink.svg" alt="">Link Your Account</a><br>
 
         </div>
-
-        
-
+        <div>
+          <a class="button button-default" href="#" target="_blank" rel="noopener" role="button">+</a><br>
+        </div>
         
 
         <br>
-        <!-- 
-            Footer:
-            This includes a link to privacy.html page which can be setup for your Privacy Policy.
-            This also includes a link to the LittleLink repository to make forking LittleLink easier.
-            You can edit or remove anything here to make your own footer.
-        -->
         <p><a href="privacy.html">Privacy Policy</a> | Build your own by forking <a href="https://littlelink.io" target="_blank" rel="noopener" role="button">LittleLink</a>.</p>
 
       </div>
     </div>
   </div>
 
+  <div id="brand-edit" class="container modal">
+    <h2>Edit Account</h2>
+    <div>
+      <div>
+        <!-- Button preview -->
+        <a class="button button-default" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" src="images/icons/littlelink.svg" alt="">Link Your Account</a>
+      </div>
+      <div>
+        <label for="brand-select">Select Platform</label>
+        <select name="brand-select" id="brand-name">
+          <!-- To be populated by javascript -->
+        </select>
+      </div>
+      
+      <p>
+        <input type="text" id="brand-desc">
+      </p>
+      <p>
+        <input type="text" id="brand-link">
+      </p>
+
+    </div>
+  </div>
+
   <!-- Load rendering script -->
-  <script src="js/render.js"></script>
+  <script src="js/generate.js"></script>
 </body>
 
 </html>
