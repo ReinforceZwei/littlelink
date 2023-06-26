@@ -30,13 +30,14 @@
                 bio: "",
                 email: "",
                 gravatar: "",
-                links: [{"name": "Default LittleLink", "class": "button-default", "icon": "images/icons/littlelink.svg", "desc": "LittleLink"}],
+                gravatarHash: "",
+                links: [{"name": "Default LittleLink", "desc": "Click To Edit"}],
                 brandInfo: {},
                 brandSelectList: [],
                 editingBrand: {},
                 editingBrandIndex: -1,
                 editModalOpen: false,
-                defaultLink: {"name": "Default LittleLink", "class": "button-default", "icon": "images/icons/littlelink.svg", "desc": "LittleLink"},
+                defaultLink: {"name": "Default LittleLink", "desc": "Click To Edit"},
                 avatarModalOpen: false,
                 generateModalOpen: false,
                 finalProfileLink: "",
@@ -44,7 +45,6 @@
         },
         methods: {
             editBrand(index){
-                console.log(index)
                 this.editingBrand = this.links[index]
                 this.editingBrandIndex = index
                 this.editModalOpen = true
@@ -53,12 +53,10 @@
                 this.editModalOpen = false
             },
             addLink() {
-                this.links.push(this.defaultLink)
+                this.links.push(JSON.parse(JSON.stringify(this.defaultLink)))
             },
             onBrandSelectChange() {
                 let name = this.editingBrand.name
-                this.editingBrand.class = this.brandInfo[name].class
-                this.editingBrand.icon = this.brandInfo[name].icon
                 this.editingBrand.desc = this.brandInfo[name].desc
             },
             editModalDelete() {
@@ -80,6 +78,7 @@
                 .then(resp => {
                     if (resp.ok) {
                         this.gravatar = gravatarUrl
+                        this.gravatarHash = hash
                     }else{
                         alert("Cannot find your Gravatar")
                     }
@@ -91,7 +90,7 @@
                     "bio": this.bio,
                     "links": this.links
                 }
-                if (this.gravatar) link.gravatar = this.gravatar
+                if (this.gravatar) link.gravatar = this.gravatarHash
 
                 let serverUrl = location.href.substring(0, location.href.lastIndexOf('/'))
                 let base64 = encodeBase64UrlSafe(JSON.stringify(link))
@@ -115,7 +114,10 @@
                 this.name = profile.name
                 this.bio = profile.bio
                 this.links = profile.links
-                if (profile.gravatar) this.gravatar = profile.gravatar
+                if (profile.gravatar) {
+                    this.gravatarHash = profile.gravatar
+                    this.gravatar = `https://www.gravatar.com/avatar/${this.gravatarHash}?r=g&d=404&s=128`
+                }
             }
         },
         created() {
@@ -129,6 +131,28 @@
                     this.brandInfo[e.name] = e
                 })
             });
+            let link = getUrlHash()
+            if (link) {
+                let json = decodeBase64UrlSafe(link)
+                let profile = JSON.parse(json)
+                this.name = profile.name
+                this.bio = profile.bio
+                this.links = profile.links
+                if (profile.gravatar) {
+                    this.gravatarHash = profile.gravatar
+                    this.gravatar = `https://www.gravatar.com/avatar/${this.gravatarHash}?r=g&d=404&s=128`
+                }
+            }
+        },
+        updated() {
+            let link = {
+                "name": this.name,
+                "bio": this.bio,
+                "links": this.links
+            }
+            if (this.gravatar) link.gravatar = this.gravatarHash
+            let base64 = encodeBase64UrlSafe(JSON.stringify(link))
+            location.hash = '#' + base64
         }
     })
     app.mount("#app")

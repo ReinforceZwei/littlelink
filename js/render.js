@@ -11,7 +11,17 @@ const DEFAULT_PROFILE = {
         },
     ]
 }
-render()
+
+var brandInfo = {}
+fetch("brand.json")
+.then(response => response.json())
+.then(brand => {
+    brand.forEach(e => {
+        brandInfo[e.name] = e
+    })
+    render()
+});
+
 //renderProfile(DEFAULT_PROFILE)
 
 function render(){
@@ -37,12 +47,14 @@ function renderProfile(profile) {
     nameEl.innerText = profile.name
     bioEl.innerText = profile.bio
     profile.links.forEach(link => {
+        link.class = brandInfo[link.name].class
+        link.icon = brandInfo[link.name].icon
         let htmlString = makeLinkTemplate(link)
         let htmlNode = createElementFromHTML(htmlString)
         linksEl.appendChild(htmlNode)
     })
     if (profile.gravatar) {
-        avatarEl.src = profile.gravatar
+        avatarEl.src = `https://www.gravatar.com/avatar/${profile.gravatar}?r=g&d=404&s=128`
     }else{
         avatarEl.style.display = 'none'
     }
