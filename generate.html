@@ -24,7 +24,7 @@
             Light:  css/skeleton-light.css
             Dark:   css/skeleton-dark.css
      -->
-    <link rel="stylesheet" href="css/skeleton-auto.css">
+    <link rel="stylesheet" href="css/skeleton-dark.css">
 
     <!-- Brand Styles -->
     <link rel="stylesheet" href="css/brands.css">
@@ -39,7 +39,6 @@
 
   <style>
 .modal {
-  display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
@@ -50,76 +49,144 @@
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
+.modal-content {
+  background-color: #2b2b2b;
+  color-scheme: dark;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
   </style>
 
 </head>
 
 <body>
+  <div id="app">
+    <!-- Primary Page Layout
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <div class="container">
+      <div class="row">
+        <div class="column" style="margin-top: 10%">
 
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container" id="app">
-    <div class="row">
-      <div class="column" style="margin-top: 10%">
+          <!-- Title -->
+          <h2 role="heading">Create your profile</h2>
+          <p>
+            <a role="button" class="button" @click="importProfile()">Edit existing profile</a>
+          </p>
 
-        <!-- Your Image Here -->
-        <img src="images/littlelink.svg" class="avatar" srcset="images/littlelink.svg 2x" alt="">
+          <!-- Your Image Here -->
+          <img :src="gravatar || 'images/littlelink.svg'" class="avatar">
 
-        <!-- Title -->
-        <p role="heading">Create your profile</p>
-        <h1>
-          <input type="text" id="name" placeholder="Your Name" v-model="name">
-        </h1>
+          <div>
+            <a class="button" @click="openAvatarModal()">Change avatar</a>
+          </div>
 
-        <!-- Short Bio -->
-        <p>Your Bio</p>
+          <h1>
+            <input type="text" style="text-align: center;" placeholder="Your Name" v-model="name">
+          </h1>
+
+          <!-- Short Bio -->
+          <p>About You</p>
+          <div>
+            <textarea name="" id="bio" style="width: 300px" rows="3" v-model="bio"></textarea>
+          </div>
+
+          <p>
+            Click to edit accounts
+          </p>
+
+          <!-- Links Container -->
+          <div id="links">
+
+            <!-- Default LittleLink -->
+            <a v-for="(link, index) in links" :class="'button ' + link.class" @click="editBrand(index)" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" :src="link.icon" alt="">{{link.desc}}</a><br>
+
+          </div>
+          <div>
+            <a class="button button-default" role="button" @click="addLink()">+</a>
+          </div>
+          
+          <hr>
+
+          <div>
+            <button @click="openGenerateModal()">Generate my profile!</button>
+          </div>
+
+          <br>
+          <p><a href="privacy.html">Privacy Policy</a> | Build your own by forking <a href="https://littlelink.io" target="_blank" rel="noopener" role="button">LittleLink</a>.</p>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="brand-edit" class="modal" v-if="editModalOpen">
+      <div class="modal-content container">
+        <h2>Edit Account</h2>
+        <div>
+          <div>
+            <!-- Button preview -->
+            <a :class="'button ' + editingBrand.class" role="button"><img class="icon" :src="editingBrand.icon" alt="">{{editingBrand.desc}}</a><br>
+          </div>
+          <div>
+            <div>Platform</div>
+            <!-- <label for="brand-select">Select Platform</label> -->
+            <select name="brand-select" id="brand-name" @change="onBrandSelectChange()" v-model="editingBrand.name">
+              <option v-for="b in brandSelectList" :value="b.name">{{b.name}}</option>
+            </select>
+          </div>
+          
+          <div>
+            <div>Description</div>
+            <input type="text" id="brand-desc" v-model="editingBrand.desc">
+          </div>
+          <div>
+            <div>Profile Link</div>
+            <input type="text" id="brand-link" v-model="editingBrand.href" placeholder="https://">
+          </div>
+          <div>
+            <button role="button" class="button" @click="editModalDelete()">Delete</button>
+            <button role="button" class="button" @click="editModalClose()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" v-if="avatarModalOpen">
+      <div class="modal-content container">
+        <h2>Change avatar</h2>
+        <div>
+          <img :src="gravatar || 'images/littlelink.svg'" class="avatar">
+        </div>
         <p>
-          <textarea name="" id="bio" cols="50" rows="10" v-model="bio"></textarea>
+          We use <a href="https://gravatar.com/">Gravatar</a> for displaying your avatar<br>
+          Enter your email to retrieve your avatar
         </p>
-
-        <!-- Links Container -->
-        <div id="links">
-
-          <!-- Default LittleLink -->
-          <a v-for="(link, index) in links" :class="'button ' + link.class" @click="editBrand(index)" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" :src="link.icon" alt="">{{link.desc}}</a><br>
-
+        <div>
+          <input type="text" v-model="email">
         </div>
         <div>
-          <a class="button button-default" href="#" target="_blank" rel="noopener" role="button">+</a><br>
+          <button @click="findGravatar()">Find your Gravatar</button>
         </div>
-        
+        <div>
+          <a role="button" class="button" @click="closeAvatarModal()">Close</a>
+        </div>
+      </div>
+    </div>
 
-        <br>
-        <p><a href="privacy.html">Privacy Policy</a> | Build your own by forking <a href="https://littlelink.io" target="_blank" rel="noopener" role="button">LittleLink</a>.</p>
-
+    <div class="modal" v-if="generateModalOpen">
+      <div class="modal-content container">
+        <h2>Profile Link</h2>
+        <textarea style="width:300px;resize:none;" readonly rows="3" v-model="finalProfileLink"></textarea>
+        <div>
+          <button @click="copyProfileLink()">Copy to clipboard</button>
+        </div>
+        <div>
+          <a role="button" class="button" @click="closeGenerateModal()">Close</a>
+        </div>
       </div>
     </div>
   </div>
-
-  <div id="brand-edit" class="container modal">
-    <h2>Edit Account</h2>
-    <div>
-      <div>
-        <!-- Button preview -->
-        <a class="button button-default" role="button" data-brand-name="Default LittleLink" data-brand-link="https://google.com"><img class="icon" src="images/icons/littlelink.svg" alt="">Link Your Account</a>
-      </div>
-      <div>
-        <label for="brand-select">Select Platform</label>
-        <select name="brand-select" id="brand-name">
-          <!-- To be populated by javascript -->
-        </select>
-      </div>
-      
-      <p>
-        <input type="text" id="brand-desc">
-      </p>
-      <p>
-        <input type="text" id="brand-link">
-      </p>
-
-    </div>
-  </div>
-
   <!-- Load rendering script -->
   <script src="js/generate.js"></script>
 </body>

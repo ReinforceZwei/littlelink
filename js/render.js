@@ -32,6 +32,7 @@ function renderProfile(profile) {
     let nameEl = document.getElementById('name')
     let bioEl = document.getElementById('bio')
     let linksEl = document.getElementById('links')
+    let avatarEl = document.getElementById('avatar')
 
     nameEl.innerText = profile.name
     bioEl.innerText = profile.bio
@@ -40,6 +41,11 @@ function renderProfile(profile) {
         let htmlNode = createElementFromHTML(htmlString)
         linksEl.appendChild(htmlNode)
     })
+    if (profile.gravatar) {
+        avatarEl.src = profile.gravatar
+    }else{
+        avatarEl.style.display = 'none'
+    }
 }
 
 function makeLinkTemplate(link) {
